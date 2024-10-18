@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Base colors */
+    --background: 35 30% 95%; /* Warm, light beige background (unchanged) */
+    --foreground: 25 25% 25%; /* Deep brown text for contrast */
+
+    /* Muted colors */
+    --muted: 35 20% 90%; /* Softer beige for muted backgrounds (unchanged) */
+    --muted-foreground: 25 20% 40%; /* Muted brown text */
+
+    /* Card colors */
+    --card: 0 0% 100%; /* Pure white for cards (unchanged) */
+    --card-foreground: 25 25% 25%; /* Same as foreground for consistency */
+
+    /* Popover colors */
+    --popover: 0 0% 100%; /* Pure white for popovers (unchanged) */
+    --popover-foreground: 25 25% 25%; /* Same as foreground for consistency */
+
+    /* Border colors */
+    --border: 35 25% 80%; /* Slightly darker beige for borders (unchanged) */
+    --input: 35 25% 80%; /* Same as border for consistency */
+
+    /* Primary colors */
+    --primary: 25 80% 50%; /* Warm orange for primary actions */
+    --primary-foreground: 0 0% 100%; /* White text on primary background */
+
+    /* Secondary colors */
+    --secondary: 35 25% 90%; /* Light beige for secondary elements (unchanged) */
+    --secondary-foreground: 25 25% 25%; /* Same as foreground for consistency */
+
+    /* Accent colors */
+    --accent: 15 30% 90%; /* Soft, light terracotta for accents */
+    --accent-foreground: 15 50% 30%; /* Deep terracotta for accent text */
+
+    /* Destructive colors */
+    --destructive: 0 65% 95%; /* Very soft red for destructive actions (unchanged) */
+    --destructive-foreground: 0 65% 35%; /* Darker red text on destructive background (unchanged) */
+
+    /* Focus ring color */
+    --ring: 25 80% 60%; /* Brighter orange for focus ring */
+
+    /* Border radius */
+    --radius: 0.5rem; /* Rounded corners for a soft appearance (unchanged) */
+  }
+
+  /* Dark mode overrides */
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: 25 20% 15%; /* Deep brown background */
+      --foreground: 35 20% 90%; /* Light beige text */
+
+      --muted: 25 15% 25%; /* Slightly lighter background for muted areas */
+      --muted-foreground: 35 15% 80%; /* Softer beige for muted text */
+
+      --card: 25 15% 25%; /* Slightly lighter than background for contrast */
+      --card-foreground: 35 20% 90%; /* Same as foreground for consistency */
+
+      --popover: 25 15% 25%; /* Same as card for consistency */
+      --popover-foreground: 35 20% 90%; /* Same as foreground for consistency */
+
+      --border: 25 20% 30%; /* Slightly lighter border for definition */
+      --input: 25 20% 30%; /* Same as border for consistency */
+
+      --primary: 25 70% 50%; /* Muted orange for primary actions */
+      --primary-foreground: 0 0% 100%; /* White text on primary background */
+
+      --secondary: 25 15% 30%; /* Slightly lighter than background for secondary elements */
+      --secondary-foreground: 35 20% 90%; /* Same as foreground for consistency */
+
+      --accent: 15 30% 40%; /* Deep terracotta for accents */
+      --accent-foreground: 15 30% 90%; /* Light terracotta for accent text */
+
+      --destructive: 0 50% 30%; /* Muted red for destructive actions (unchanged) */
+      --destructive-foreground: 0 50% 90%; /* Light red text on destructive background (unchanged) */
+
+      --ring: 25 70% 60%; /* Brighter orange for focus ring */
+    }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

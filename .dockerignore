@@ -1,0 +1,8 @@
+/.nuxt
+/.output
+/.kamal
+/node_modules
+
+.env
+.gitignore
+README.md
