@@ -78,6 +78,8 @@ import { ref } from "vue";
 const voiceOptions = ["calm", "energetic", "soothing"];
 const backgroundSoundOptions = ["none", "rain", "ocean", "forest"];
 
+const router = useRouter();
+
 const topic = ref("");
 const duration = ref([5]);
 const voice = ref("calm");
@@ -91,6 +93,19 @@ async function handleSubmit() {
     voice: voice.value,
     backgroundSound: backgroundSound.value,
   });
+
+  setTimeout(() => {
+    router.push({
+      path: "/meditation/ready",
+      query: {
+        topic: topic.value,
+        duration: duration.value?.[0],
+        voice: voice.value,
+        backgroundSound: backgroundSound.value,
+        audioUrl: "https://example.com/audio.mp3",
+      },
+    });
+  }, 1000);
   // alert("Meditation generation started! Redirecting to loading screen...");
 }
 </script>
