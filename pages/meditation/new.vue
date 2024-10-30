@@ -7,12 +7,13 @@
         >
       </CardHeader>
       <CardContent>
-        <form @submit.prevent="handleSubmit" class="space-y-6">
+        <form v-enhance="enhance" method="POST" class="space-y-6">
           <div class="space-y-2">
             <Label for="topic">Meditation Topic</Label>
             <Input
               id="topic"
               placeholder="e.g., Focus, Sleep"
+              name="topic"
               v-model="topic"
               required
             />
@@ -22,50 +23,65 @@
             <Label for="duration">Duration (minutes)</Label>
             <Slider
               id="duration"
-              :min="5"
-              :max="30"
+              :min="2"
+              :max="10"
               :step="1"
+              name="duration"
               v-model="duration"
             />
             <div class="text-center">{{ duration?.[0] }} minutes</div>
           </div>
 
           <div class="space-y-2">
-            <Label for="voice">Voice</Label>
-            <Select v-model="voice">
-              <SelectTrigger>
-                <SelectValue placeholder="Select a voice" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem
-                  v-for="option in voiceOptions"
-                  :key="option"
-                  :value="option"
-                >
-                  {{ option }}
-                </SelectItem>
-              </SelectContent>
-            </Select>
+            <FormField v-slot="{ componentField }" name="voice">
+              <FormItem>
+                <FormLabel for="voice">Voice</FormLabel>
+                <Select v-bind="componentField" name="voice" v-model="voice">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a voice" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem
+                      v-for="option in voiceOptions"
+                      :key="option"
+                      :value="option"
+                    >
+                      {{ option }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormItem>
+            </FormField>
           </div>
 
           <div class="space-y-2">
-            <Label for="background-sound">Background Sound</Label>
-            <Select v-model="backgroundSound">
-              <SelectTrigger>
-                <SelectValue placeholder="Select a background sound" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem
-                  v-for="option in backgroundSoundOptions"
-                  :key="option"
-                  :value="option"
-                >
-                  {{ option }}
-                </SelectItem>
-              </SelectContent>
-            </Select>
+            <FormField v-slot="{ componentField }" name="backgroundSound">
+              <FormItem>
+                <FormLabel for="background-sound">Background Sound</FormLabel>
+                <Select v-bind="componentField" v-model="backgroundSound">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a background sound" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem
+                      v-for="option in backgroundSoundOptions"
+                      :key="option"
+                      :value="option"
+                    >
+                      {{ option }}
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormItem>
+            </FormField>
           </div>
-          <Button class="w-full" type="submit"> Generate Meditation </Button>
+          <Button class="w-full" type="submit" :disabled="loading">
+            <span v-if="loading"
+              ><Loader2 class="w-4 h-4 mr-2 animate-spin" /> Generating
+              ...</span
+            >
+            <span v-else>Generate meditation</span>
+          </Button>
         </form>
       </CardContent>
     </Card>
@@ -78,34 +94,10 @@ import { ref } from "vue";
 const voiceOptions = ["calm", "energetic", "soothing"];
 const backgroundSoundOptions = ["none", "rain", "ocean", "forest"];
 
-const router = useRouter();
-
 const topic = ref("");
 const duration = ref([5]);
 const voice = ref("calm");
 const backgroundSound = ref("none");
 
-async function handleSubmit() {
-  // Here you would typically call an API to generate the meditation
-  console.log("Generating meditation with:", {
-    topic: topic.value,
-    duration: duration.value,
-    voice: voice.value,
-    backgroundSound: backgroundSound.value,
-  });
-
-  setTimeout(() => {
-    router.push({
-      path: "/meditation/ready",
-      query: {
-        topic: topic.value,
-        duration: duration.value?.[0],
-        voice: voice.value,
-        backgroundSound: backgroundSound.value,
-        audioUrl: "https://example.com/audio.mp3",
-      },
-    });
-  }, 1000);
-  // alert("Meditation generation started! Redirecting to loading screen...");
-}
+const { enhance, data, loading } = await useFormAction();
 </script>

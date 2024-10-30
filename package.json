@@ -7,23 +7,30 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "types": "supabase gen types --lang=typescript --project-id 'kgupmizmphttxrzrykcj' --schema public > server/database.types.ts"
   },
   "dependencies": {
+    "@hebilicious/form-actions-nuxt": "^0.3.0",
     "@nuxt/icon": "^1.5.6",
     "@nuxtjs/supabase": "^1.4.1",
     "@supabase/supabase-js": "^2.45.4",
+    "@vee-validate/zod": "^4.14.6",
     "@vueuse/core": "^11.1.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "lucide-vue-next": "^0.452.0",
     "nuxt": "^3.13.0",
+    "openai": "^4.68.4",
     "radix-vue": "^1.9.7",
     "shadcn-nuxt": "^0.10.4",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
+    "vee-validate": "^4.14.6",
     "vue": "latest",
-    "vue-router": "latest"
+    "vue-router": "latest",
+    "zod": "^3.23.8",
+    "zod-form-data": "^2.0.2"
   },
   "devDependencies": {
     "@nuxtjs/tailwindcss": "^6.12.1",

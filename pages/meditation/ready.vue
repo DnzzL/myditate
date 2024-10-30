@@ -8,7 +8,7 @@
       </CardHeader>
       <CardContent class="space-y-4">
         <div class="text-lg font-semibold text-center">
-          Duration: {{ formatDuration(duration) }}
+          Duration: {{ duration }} minutes
         </div>
         <div class="flex justify-center">
           <NuxtLink
@@ -52,32 +52,11 @@ type MeditationReadyScreenProps = {
 };
 
 const route = useRoute();
-const { topic, duration, voice, backgroundSound, audioUrl } =
-  route.query as any as MeditationReadyScreenProps;
-
-const meditation = {
-  topic,
-  duration,
-  voice,
-  backgroundSound,
-  audioUrl,
-};
-
-onMounted(() => {
-  // save the meditation in database
-  console.log("saving meditation", meditation);
-  //   db.collection("meditations").add(meditation);
-});
+const { topic, duration, audioUrl } = route.query as MeditationReadyScreenProps;
 
 const emit = defineEmits<{
   (event: "regenerate"): void;
 }>();
-
-const formatDuration = (seconds: number) => {
-  const minutes = Math.floor(seconds / 60);
-  const remainingSeconds = seconds % 60;
-  return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
-};
 
 const downloadAudio = () => {
   window.open(audioUrl, "_blank");
