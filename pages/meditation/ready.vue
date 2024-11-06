@@ -11,9 +11,7 @@
           Duration: {{ duration }} minutes
         </div>
         <div class="flex justify-center">
-          <NuxtLink
-            :to="{ name: 'meditation-playback-id', params: { id: 123 } }"
-          >
+          <NuxtLink :to="{ name: 'meditation-playback-id', params: { id } }">
             <Button size="lg" class="w-24 h-24 rounded-full">
               <PlayIcon class="w-12 h-12" />
             </Button>
@@ -44,6 +42,7 @@ import {
 } from "lucide-vue-next";
 
 type MeditationReadyScreenProps = {
+  id: string;
   topic: string;
   duration: number;
   voice: string;
@@ -52,7 +51,8 @@ type MeditationReadyScreenProps = {
 };
 
 const route = useRoute();
-const { topic, duration, audioUrl } = route.query as MeditationReadyScreenProps;
+const { id, topic, duration, audioUrl } =
+  route.query as unknown as MeditationReadyScreenProps;
 
 const emit = defineEmits<{
   (event: "regenerate"): void;

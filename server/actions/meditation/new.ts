@@ -82,6 +82,7 @@ export default defineFormActions({
           buffer,
           {
             cacheControl: "3600",
+            contentType: "audio/mpeg",
             upsert: false,
           }
         );
@@ -97,7 +98,7 @@ export default defineFormActions({
         .from("audio_files")
         .insert({
           duration: meditation.duration,
-          url: audioFile?.fullPath,
+          url: audioFile?.path,
         })
         .select("id");
       if (audioSaveError) {
@@ -108,15 +109,19 @@ export default defineFormActions({
         );
       }
 
-      const { error: saveError } = await client.from("meditations").insert({
-        topic: meditation.topic,
-        duration: meditation.duration,
-        voice: meditation.voice,
-        script,
-        audio_id: audioEntryId[0].id,
-        background_sound: null,
-        user_id: user.id,
-      });
+      const { data: created, error: saveError } = await client
+        .from("meditations")
+        .insert({
+          topic: meditation.topic,
+          duration: meditation.duration,
+          voice: meditation.voice,
+          script,
+          audio_id: audioEntryId[0].id,
+          background_sound: null,
+          user_id: user.id,
+        })
+        .select("id")
+        .single();
       if (saveError) {
         return actionResponse(
           event,
@@ -125,7 +130,7 @@ export default defineFormActions({
         );
       }
 
-      const redirectUrl = `/meditation/ready?topic=${meditation.topic}&duration=${meditation.duration}&voice=${meditation.voice}&backgroundSound=${meditation.backgroundSound}&audioUrl=${audioFile?.fullPath}`;
+      const redirectUrl = `/meditation/ready?id=${created.id}&topic=${meditation.topic}&duration=${meditation.duration}&voice=${meditation.voice}&backgroundSound=${meditation.backgroundSound}&audioUrl=${audioFile?.fullPath}`;
       return actionResponse(event, { meditation }, { redirect: redirectUrl });
     } catch (e) {
       if (e instanceof Error) {

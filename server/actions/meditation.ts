@@ -1,18 +1,5 @@
 import { serverSupabaseClient, serverSupabaseUser } from "#supabase/server";
-import { z } from "zod";
 import { Database } from "../database.types";
-
-const newMeditationSchema = z.object({
-  topic: z.string(),
-  duration: z.number().array(),
-  voice: z.string(),
-  backgroundSound: z.string(),
-  audioUrl: z.string().url(),
-});
-
-export default defineFormActions({
-  delete: async (event) => {},
-});
 
 export const loader = defineServerLoader(async (event) => {
   const user = await serverSupabaseUser(event);
