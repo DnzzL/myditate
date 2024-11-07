@@ -21,20 +21,20 @@
             <CardTitle>Recent Meditations</CardTitle>
           </CardHeader>
           <CardContent>
-            <ul
-              v-for="(meditation, index) in recentMeditations"
-              class="space-y-10"
-            >
-              <li :key="index" class="flex items-center justify-between">
+            <ul v-for="meditation in recentMeditations" class="space-y-10">
+              <li
+                :key="meditation.id"
+                class="flex items-center justify-between"
+              >
                 <div>
-                  <h3 class="font-medium">{{ meditation.name }}</h3>
+                  <h3 class="font-medium">{{ meditation.topic }}</h3>
                   <p class="text-sm text-muted-foreground">
                     {{ meditation.duration }} minutes
                   </p>
                 </div>
                 <Button variant="ghost" size="icon">
                   <Play class="w-4 h-4" />
-                  <span class="sr-only">Play {{ meditation.name }}</span>
+                  <span class="sr-only">Play {{ meditation.topic }}</span>
                 </Button>
               </li>
             </ul>
@@ -48,9 +48,11 @@
           <CardContent>
             <ul v-for="(topic, index) in suggestedTopics" class="space-y-2">
               <li :key="index">
-                <Button variant="link" class="p-0 text-primary">
-                  {{ topic }}
-                </Button>
+                <NuxtLink :to="{ name: 'meditation-new', query: { topic } }">
+                  <Button variant="link" class="p-0 text-primary">
+                    {{ topic }}
+                  </Button>
+                </NuxtLink>
               </li>
             </ul>
           </CardContent>
@@ -65,11 +67,8 @@ import { Play, Plus } from "lucide-vue-next";
 
 const router = useRouter();
 
-const recentMeditations = [
-  { name: "Morning Focus", duration: 5 },
-  { name: "Stress Relief", duration: 10 },
-  { name: "Bedtime Relaxation", duration: 15 },
-];
+const { result } = await useLoader("meditation/recent");
+const recentMeditations = computed(() => result.value?.meditations ?? []);
 
 const suggestedTopics = [
   "Stress Relief",

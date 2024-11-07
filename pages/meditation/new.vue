@@ -94,10 +94,25 @@ import { ref } from "vue";
 const voiceOptions = ["calm", "energetic", "soothing"];
 const backgroundSoundOptions = ["none", "rain", "ocean", "forest"];
 
-const topic = ref("");
-const duration = ref([5]);
-const voice = ref("calm");
-const backgroundSound = ref("none");
+type MeditationNewScreenProps = {
+  topic: string;
+  duration: number;
+  voice: string;
+  backgroundSound: string;
+};
+
+const route = useRoute();
+const {
+  topic: routeTopic,
+  duration: routeDuration,
+  voice: routeVoice,
+  backgroundSound: routeBackgroundSound,
+} = route.query as unknown as MeditationNewScreenProps;
+
+const topic = ref(routeTopic ?? "");
+const duration = ref(routeDuration ? [routeDuration] : [5]);
+const voice = ref(routeVoice ?? "calm");
+const backgroundSound = ref(routeBackgroundSound ?? "none");
 
 const { enhance, data, loading } = await useFormAction();
 </script>

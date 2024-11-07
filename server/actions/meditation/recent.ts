@@ -1,5 +1,5 @@
 import { serverSupabaseClient, serverSupabaseUser } from "#supabase/server";
-import { Database } from "../database.types";
+import { Database } from "../../database.types";
 
 export const loader = defineServerLoader(async (event) => {
   const user = await serverSupabaseUser(event);
@@ -12,7 +12,8 @@ export const loader = defineServerLoader(async (event) => {
     .from("meditations")
     .select("*")
     .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
+    .order("created_at", { ascending: false })
+    .limit(5);
 
   if (error) {
     throw error;
