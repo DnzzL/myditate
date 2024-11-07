@@ -32,10 +32,12 @@
                     {{ meditation.duration }} minutes
                   </p>
                 </div>
-                <Button variant="ghost" size="icon">
-                  <Play class="w-4 h-4" />
-                  <span class="sr-only">Play {{ meditation.topic }}</span>
-                </Button>
+                <NuxtLink :to="`meditation/playback/${meditation.id}`">
+                  <Button variant="ghost" size="icon">
+                    <Play class="w-4 h-4" />
+                    <span class="sr-only">Play {{ meditation.topic }}</span>
+                  </Button>
+                </NuxtLink>
               </li>
             </ul>
           </CardContent>
