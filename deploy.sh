@@ -4,7 +4,15 @@ set -euo pipefail
 IFS=$'\n\t'
 
 # Variables
+DOCKER_HOST=ssh://root@159.69.218.31
 ENV_FILE=".env"
+ENV_VARS=()
+while IFS='=' read -r key value; do
+  # Ignore empty lines and comments
+  if [[ -n "$key" && "$key" != \#* ]]; then
+    ENV_VARS+=(--env "$key=$value")
+  fi
+done < "$ENV_FILE"
 
 function parse_env_vars() {
     local env_file=$1
@@ -39,7 +47,7 @@ function build_and_deploy_service() {
         local env_vars=($(parse_env_vars "$ENV_FILE" "update"))
         DOCKER_HOST=$DOCKER_HOST docker service update \
             --image $image_name \
-            ${env_vars[@]:-} \
+            "${ENV_VARS[@]}" \
             $service_name
     else
         echo "Creating Docker service $service_name..."
@@ -48,7 +56,7 @@ function build_and_deploy_service() {
             --name $service_name \
             --replicas 1 \
             --network caddy_network \
-            ${env_vars[@]:-} \
+            "${ENV_VARS[@]}" \
             --label caddy=myditate.legrand.sh \
             --label caddy.reverse_proxy="{{upstreams 3000}}" \
             $image_name
