@@ -69,7 +69,10 @@ import { Play, Plus } from "lucide-vue-next";
 
 const router = useRouter();
 
-const { result } = await useLoader("meditation/recent");
+const { result, error } = await useLoader("meditation/recent");
+if (error.value?.statusCode === 401) {
+  router.push("/login");
+}
 const recentMeditations = computed(() => result.value?.meditations ?? []);
 
 const suggestedTopics = [

@@ -26,7 +26,9 @@ export default function getScriptPrompt({
     - Keep language inclusive and positive, straightforward and soothing.
     - End with a brief encouragement related to the topic.
     - You can use (SSML, Speech Synthesis Markup Language) to control the speech synthesis.
-    - Use <break time="Xs" /> where X is the appropriate amount of time for pauses to slow pace the meditation.
+      - The whole script should be surrounded by <speak> tags.
+      - Use <prosody rate="slow"> for slow-paced sections.
+      - Use many <break time="Xs" /> where X is the appropriate amount of time in seconds
     - Ensure the script is approximately ${duration} minutes long.
     - The output should only be what the listener hears, excluding any technical instructions.
   `;

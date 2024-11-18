@@ -1,10 +1,10 @@
 import { serverSupabaseClient, serverSupabaseUser } from "#supabase/server";
-import fs from "fs";
 import { z } from "zod";
 import { zfd } from "zod-form-data";
 import { Database } from "~/server/database.types";
-import openai from "~/server/openai";
+import llm from "~/server/llm";
 import getScriptPrompt from "~/server/prompts/script";
+import tts from "~/server/tts";
 
 const newMeditationSchema = zfd.formData({
   topic: zfd.text(),
@@ -14,7 +14,7 @@ const newMeditationSchema = zfd.formData({
 });
 
 export default defineFormActions({
-  add: async (event) => {
+  default: async (event) => {
     console.log("Add meditation");
     const formData = await readFormData(event);
     const meditation = newMeditationSchema.parse(formData.entries());
@@ -38,8 +38,8 @@ export default defineFormActions({
 
       let script = "";
       try {
-        const response = await openai.chat.completions.create({
-          model: "gpt-4o-mini",
+        const response = await llm.chat.complete({
+          model: "open-mixtral-8x22b",
           messages: [
             {
               role: "system",
@@ -52,7 +52,7 @@ export default defineFormActions({
           ],
         });
 
-        script = response.choices[0].message.content ?? "";
+        script = response.choices?.[0]?.message?.content ?? "";
       } catch (e) {
         if (e instanceof Error) {
           return actionResponse(
@@ -64,16 +64,25 @@ export default defineFormActions({
       }
       console.log("Script", script);
 
-      // const mp3 = await openai.audio.speech.create({
-      //   model: "tts-1",
-      //   voice: "shimmer",
-      //   input: script,
-      // });
-      // const buffer = Buffer.from(await mp3.arrayBuffer());
-      // // save local file
-      // fs.writeFileSync(`${meditation.topic}.mp3`, buffer);
+      const request = {
+        input: { ssml: script },
+        voice: { languageCode: "en-US", name: "en-GB-Wavenet-C" },
+        audioConfig: { audioEncoding: "MP3" },
+      };
 
-      const buffer = fs.readFileSync(`${meditation.topic}.mp3`);
+      let buffer;
+      try {
+        const [response] = await tts.synthesizeSpeech(request);
+        buffer = Buffer.from(response.audioContent);
+      } catch (e) {
+        if (e instanceof Error) {
+          return actionResponse(
+            event,
+            { meditation },
+            { error: { code: 422, message: e?.message } }
+          );
+        }
+      }
 
       const { data: audioFile, error: audioUploadError } = await client.storage
         .from("meditations")

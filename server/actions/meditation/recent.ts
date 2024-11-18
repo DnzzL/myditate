@@ -4,7 +4,10 @@ import { Database } from "../../database.types";
 export const loader = defineServerLoader(async (event) => {
   const user = await serverSupabaseUser(event);
   if (!user) {
-    throw new Error("User not authenticated");
+    throw createError({
+      statusCode: 401,
+      statusMessage: "User not authenticated",
+    });
   }
   const client = await serverSupabaseClient<Database>(event);
 
