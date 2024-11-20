@@ -65,6 +65,18 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  middleware: [
+    function (_to, _from) {
+      const user = useSupabaseUser();
+
+      if (!user.value) {
+        return navigateTo("/login");
+      }
+    },
+  ],
+});
+
 import { Play, Plus } from "lucide-vue-next";
 
 const router = useRouter();

@@ -26,4 +26,7 @@ ENV NODE_ENV=production
 
 COPY --from=build /src/.output /src/.output
 
+RUN --mount=type=secret,id=env \
+    export $(cat /run/secrets/env | xargs)
+
 CMD [ "node", ".output/server/index.mjs" ]

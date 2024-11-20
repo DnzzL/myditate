@@ -79,7 +79,7 @@ export default defineFormActions({
           return actionResponse(
             event,
             { meditation },
-            { error: { code: 422, message: e?.message } }
+            { error: { code: 500, message: e?.message } }
           );
         }
       }
