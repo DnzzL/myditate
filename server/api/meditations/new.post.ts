@@ -12,6 +12,15 @@ const newMeditationSchema = z.object({
   backgroundSound: z.string(),
 });
 
+function slugify(input: string): string {
+  return input
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_-]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 export default defineEventHandler(async (event) => {
   const result = await readValidatedBody(event, (body) =>
     newMeditationSchema.safeParse(body)
@@ -90,7 +99,7 @@ export default defineEventHandler(async (event) => {
     const { data: audioFile, error: audioUploadError } = await client.storage
       .from("meditations")
       .upload(
-        `${user.id}/${meditation.topic}-${new Date().getTime()}`,
+        `${user.id}/${slugify(meditation.topic)}-${new Date().getTime()}`,
         buffer,
         {
           cacheControl: "3600",
