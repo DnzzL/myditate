@@ -77,7 +77,7 @@
 <script setup lang="ts">
 import { useToast } from "@/components/ui/toast/use-toast";
 import { Loader2, Pause, Play, SkipBack } from "lucide-vue-next";
-import { computed, onMounted, onUnmounted, ref } from "vue";
+import { onUnmounted, ref } from "vue";
 import { useRoute } from "vue-router";
 
 const { t } = useI18n({
@@ -85,6 +85,8 @@ const { t } = useI18n({
 });
 const route = useRoute();
 const { toast } = useToast();
+
+const playbackRates = ["0.5", "0.75", "1", "1.5", "1.75"];
 
 const isPlaying = ref(false);
 const currentTime = ref(0);
@@ -106,38 +108,43 @@ if (error.value || !meditation) {
 
 const client = useSupabaseClient();
 
-const playbackRates = ["0.5", "0.75", "1", "1.5", "1.75"];
+const durationInSeconds = computed(() => {
+  return (meditation.value?.duration ?? 0) * 60;
+});
 
-const { data: audioBlob, error: audioBlobError } = await client.storage
-  .from("meditations")
-  .download(meditation.value?.audio_files?.url ?? "");
-if (audioBlobError) {
-  toast({
-    description: "Failed to download audio file",
-    variant: "destructive",
-  });
-}
-
-const durationInSeconds = computed(
-  () => (meditation.value?.duration ?? 0) * 60
-);
-
-onMounted(() => {
-  if (audioBlob) {
-    try {
-      const audioUrl = URL.createObjectURL(audioBlob);
-
-      if (audioRef.value) {
-        audioRef.value.src = audioUrl;
-        audioRef.value.playbackRate = Number(playbackSpeed.value);
-        audioRef.value.addEventListener("timeupdate", updateTime);
-        audioRef.value.load();
-      }
-    } catch (error) {
-      console.error("Failed to create object URL:", error);
+// watch when meditation is loaded to download audio file
+watchEffect(async () => {
+  if (meditation.value && meditation.value.audio_files) {
+    const { data: audioBlob, error: audioBlobError } = await client.storage
+      .from("meditations")
+      .download(meditation.value.audio_files.url);
+    if (audioBlobError) {
+      toast({
+        description: "Failed to download audio file",
+        variant: "destructive",
+      });
     }
-  } else {
-    console.error("Invalid audioBlob or audioRef:", audioBlob, audioRef.value);
+
+    if (audioBlob) {
+      try {
+        const audioUrl = URL.createObjectURL(audioBlob);
+
+        if (audioRef.value) {
+          audioRef.value.src = audioUrl;
+          audioRef.value.playbackRate = Number(playbackSpeed.value);
+          audioRef.value.addEventListener("timeupdate", updateTime);
+          audioRef.value.load();
+        }
+      } catch (error) {
+        console.error("Failed to create object URL:", error);
+      }
+    } else {
+      console.error(
+        "Invalid audioBlob or audioRef:",
+        audioBlob,
+        audioRef.value
+      );
+    }
   }
 });
 
