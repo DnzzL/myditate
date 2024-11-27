@@ -3,12 +3,12 @@
     <Card class="w-full max-w-md mx-auto">
       <CardHeader>
         <CardTitle class="text-2xl font-bold text-center">{{
-          topic
+          t("ready.title")
         }}</CardTitle>
       </CardHeader>
       <CardContent class="space-y-4">
         <div class="text-lg font-semibold text-center">
-          Duration: {{ duration }} minutes
+          {{ t("ready.duration") }}: {{ duration }} {{ t("ready.minutes") }}
         </div>
         <div class="flex justify-center">
           <NuxtLink :to="{ name: 'meditation-playback-id', params: { id } }">
@@ -22,11 +22,11 @@
       <CardFooter class="flex justify-between">
         <Button variant="outline" @click="downloadAudio">
           <DownloadIcon class="w-4 h-4 mr-2" />
-          Download
+          {{ t("ready.download") }}
         </Button>
         <Button variant="outline" @click="emit('regenerate')">
           <RefreshCwIcon class="w-4 h-4 mr-2" />
-          Regenerate
+          {{ t("ready.regenerate") }}
         </Button>
       </CardFooter>
     </Card>
@@ -50,6 +50,9 @@ type MeditationReadyScreenProps = {
   audioUrl: string;
 };
 
+const { t } = useI18n({
+  useScope: "local",
+});
 const route = useRoute();
 const { id, topic, duration, audioUrl } =
   route.query as unknown as MeditationReadyScreenProps;
@@ -62,3 +65,26 @@ const downloadAudio = () => {
   window.open(audioUrl, "_blank");
 };
 </script>
+
+<i18n lang="json">
+{
+  "en": {
+    "ready": {
+      "title": "Meditation Ready",
+      "duration": "Duration",
+      "minutes": "minutes",
+      "download": "Download",
+      "regenerate": "Regenerate"
+    }
+  },
+  "fr": {
+    "ready": {
+      "title": "Méditation Prête",
+      "duration": "Durée",
+      "minutes": "minutes",
+      "download": "Télécharger",
+      "regenerate": "Régénérer"
+    }
+  }
+}
+</i18n>

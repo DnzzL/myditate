@@ -4,8 +4,8 @@
   >
     <Card class="w-[350px]">
       <CardHeader>
-        <CardTitle>Sign Up</CardTitle>
-        <CardDescription>Create a new account</CardDescription>
+        <CardTitle>{{ t("signup.title") }}</CardTitle>
+        <CardDescription>{{ t("signup.description") }}</CardDescription>
       </CardHeader>
       <CardContent>
         <form @submit.prevent="handleSignup">
@@ -14,7 +14,7 @@
               <Input
                 id="email"
                 v-model="email"
-                placeholder="Email"
+                :placeholder="t('signup.emailPlaceholder')"
                 type="email"
                 required
               />
@@ -23,7 +23,7 @@
               <Input
                 id="password"
                 v-model="password"
-                placeholder="Password"
+                :placeholder="t('signup.passwordPlaceholder')"
                 type="password"
                 required
               />
@@ -31,29 +31,35 @@
           </div>
           <div v-if="errorMsg" class="mt-2 text-red-500">{{ errorMsg }}</div>
           <div class="grid grid-cols-2 gap-2 mt-4">
-            <Button variant="outline" :disabled="isLoading">Cancel</Button>
-            <Button type="submit" :disabled="isLoading"
-              ><Loader2
-                v-if="isLoading"
-                class="w-4 h-4 mr-2 animate-spin"
-              />Sign Up</Button
-            >
+            <Button variant="outline" :disabled="isLoading">{{
+              t("signup.cancel")
+            }}</Button>
+            <Button type="submit" :disabled="isLoading">
+              <Loader2 v-if="isLoading" class="w-4 h-4 mr-2 animate-spin" />{{
+                t("signup.signUp")
+              }}
+            </Button>
           </div>
         </form>
       </CardContent>
       <CardFooter class="flex gap-1 text-gray-500">
-        <span>Already an account ?</span
-        ><Button variant="link" @click="router.push('/login')">Sign Up</Button>
+        <span>{{ t("signup.alreadyAccount") }}</span>
+        <Button variant="link" @click="router.push('/login')">{{
+          t("signup.login")
+        }}</Button>
       </CardFooter>
     </Card>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useToast } from "@/components/ui/toast/use-toast";
 import { Loader2 } from "lucide-vue-next";
 import { ref } from "vue";
-import { useToast } from "@/components/ui/toast/use-toast";
 
+const { t } = useI18n({
+  useScope: "local",
+});
 const router = useRouter();
 const supabase = useSupabaseClient();
 const { toast } = useToast();
@@ -94,3 +100,32 @@ async function handleSignup() {
   }
 }
 </script>
+
+<i18n lang="json">
+{
+  "en": {
+    "signup": {
+      "title": "Sign Up",
+      "description": "Create a new account",
+      "emailPlaceholder": "Email",
+      "passwordPlaceholder": "Password",
+      "cancel": "Cancel",
+      "signUp": "Sign Up",
+      "alreadyAccount": "Already have an account?",
+      "login": "Login"
+    }
+  },
+  "fr": {
+    "signup": {
+      "title": "Inscription",
+      "description": "Créer un nouveau compte",
+      "emailPlaceholder": "Email",
+      "passwordPlaceholder": "Mot de passe",
+      "cancel": "Annuler",
+      "signUp": "S'inscrire",
+      "alreadyAccount": "Vous avez déjà un compte ?",
+      "login": "Connexion"
+    }
+  }
+}
+</i18n>

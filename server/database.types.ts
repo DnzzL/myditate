@@ -179,6 +179,7 @@ export type Database = {
           created_at: string
           default_background: string | null
           default_duration: number | null
+          default_language: string | null
           default_voice: string | null
           id: number
           meditation_style: string | null
@@ -189,6 +190,7 @@ export type Database = {
           created_at?: string
           default_background?: string | null
           default_duration?: number | null
+          default_language?: string | null
           default_voice?: string | null
           id?: number
           meditation_style?: string | null
@@ -199,6 +201,7 @@ export type Database = {
           created_at?: string
           default_background?: string | null
           default_duration?: number | null
+          default_language?: string | null
           default_voice?: string | null
           id?: number
           meditation_style?: string | null

@@ -4,10 +4,8 @@
   >
     <Card class="w-[350px]">
       <CardHeader>
-        <CardTitle>Login</CardTitle>
-        <CardDescription
-          >Enter your credentials to access your account</CardDescription
-        >
+        <CardTitle>{{ t("login.title") }}</CardTitle>
+        <CardDescription>{{ t("login.description") }}</CardDescription>
       </CardHeader>
       <CardContent>
         <form @submit.prevent="handleLogin">
@@ -16,7 +14,7 @@
               <Input
                 id="email"
                 v-model="email"
-                placeholder="Email"
+                :placeholder="t('login.emailPlaceholder')"
                 type="email"
                 required
               />
@@ -25,7 +23,7 @@
               <Input
                 id="password"
                 v-model="password"
-                placeholder="Password"
+                :placeholder="t('login.passwordPlaceholder')"
                 type="password"
                 required
               />
@@ -33,29 +31,35 @@
           </div>
           <div v-if="errorMsg" class="mt-2 text-red-500">{{ errorMsg }}</div>
           <div class="grid grid-cols-2 gap-2 mt-4">
-            <Button variant="outline" :disabled="isLoading">Cancel</Button>
+            <Button variant="outline" :disabled="isLoading">{{
+              t("login.cancel")
+            }}</Button>
             <Button type="submit" :disabled="isLoading"
-              ><Loader2
-                v-if="isLoading"
-                class="w-4 h-4 mr-2 animate-spin"
-              />Login</Button
+              ><Loader2 v-if="isLoading" class="w-4 h-4 mr-2 animate-spin" />{{
+                t("login.login")
+              }}</Button
             >
           </div>
         </form>
       </CardContent>
       <CardFooter class="flex gap-1 text-gray-500">
-        <span>Not signed up yet ?</span
-        ><Button variant="link" @click="router.push('/signup')">Sign Up</Button>
+        <span>{{ t("login.notSignedUp") }}</span
+        ><Button variant="link" @click="router.push('/signup')">{{
+          t("login.signUp")
+        }}</Button>
       </CardFooter>
     </Card>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useToast } from "@/components/ui/toast/use-toast";
 import { Loader2 } from "lucide-vue-next";
 import { ref } from "vue";
-import { useToast } from "@/components/ui/toast/use-toast";
 
+const { t } = useI18n({
+  useScope: "local",
+});
 const router = useRouter();
 const supabase = useSupabaseClient();
 const { toast } = useToast();
@@ -93,3 +97,32 @@ async function handleLogin() {
   }
 }
 </script>
+
+<i18n lang="json">
+{
+  "en": {
+    "login": {
+      "title": "Login",
+      "description": "Enter your credentials to access your account",
+      "emailPlaceholder": "Email",
+      "passwordPlaceholder": "Password",
+      "cancel": "Cancel",
+      "login": "Login",
+      "notSignedUp": "Not signed up yet?",
+      "signUp": "Sign Up"
+    }
+  },
+  "fr": {
+    "login": {
+      "title": "Connexion",
+      "description": "Entrez vos identifiants pour accéder à votre compte",
+      "emailPlaceholder": "Email",
+      "passwordPlaceholder": "Mot de passe",
+      "cancel": "Annuler",
+      "login": "Se Connecter",
+      "notSignedUp": "Pas encore inscrit ?",
+      "signUp": "S'inscrire"
+    }
+  }
+}
+</i18n>

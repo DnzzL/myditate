@@ -1,7 +1,7 @@
 import { serverSupabaseClient, serverSupabaseUser } from "#supabase/server";
 import { Database } from "../../database.types";
 
-export const loader = defineServerLoader(async (event) => {
+export default defineEventHandler(async (event) => {
   const user = await serverSupabaseUser(event);
   if (!user) {
     throw createError({
@@ -19,8 +19,11 @@ export const loader = defineServerLoader(async (event) => {
     .limit(5);
 
   if (error) {
-    throw error;
+    throw createError({
+      statusCode: 500,
+      statusMessage: error.message,
+    });
   }
 
-  return { meditations };
+  return meditations;
 });

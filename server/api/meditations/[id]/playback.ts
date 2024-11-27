@@ -1,15 +1,22 @@
 import { serverSupabaseClient, serverSupabaseUser } from "#supabase/server";
 import { QueryData } from "@supabase/supabase-js";
-import { z } from "zod";
-import { Database } from "../../database.types";
+import { Database } from "../../../database.types";
 
-export const loader = defineServerLoader(async (event) => {
-  const params = getQuery(event);
-  const meditationId = z.string().parse(params.id);
+export default defineEventHandler(async (event) => {
+  const meditationId = getRouterParam(event, "id");
+  if (!meditationId) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Meditation ID is required",
+    });
+  }
 
   const user = await serverSupabaseUser(event);
   if (!user) {
-    throw new Error("User not authenticated");
+    throw createError({
+      statusCode: 401,
+      statusMessage: "User not authenticated",
+    });
   }
   const client = await serverSupabaseClient<Database>(event);
 
@@ -27,10 +34,12 @@ export const loader = defineServerLoader(async (event) => {
   if (meditationError) throw meditationError;
   if (!meditation) throw new Error("Meditation not found");
 
-  if (!meditation.audio_files?.url)
-    throw new Error("Meditation has no audio file");
+  if (!meditation.audio_files?.url) {
+    throw createError({
+      statusCode: 404,
+      statusMessage: "Meditation has no audio file",
+    });
+  }
 
-  return {
-    meditation,
-  };
+  return meditation;
 });

@@ -2,9 +2,13 @@
   <div
     class="flex flex-col items-center justify-center min-h-screen p-4 bg-gradient-to-b from-blue-100 to-purple-100"
   >
-    <div class="w-full max-w-md p-6 space-y-6 bg-white rounded-lg shadow-xl">
+    <Loader2 v-if="status === 'pending'" class="w-4 h-4 mr-2 animate-spin" />
+    <div
+      v-else
+      class="w-full max-w-md p-6 space-y-6 bg-white rounded-lg shadow-xl"
+    >
       <h1 class="text-2xl font-semibold text-center text-gray-800">
-        {{ meditation.topic }}
+        {{ meditation!.topic }}
       </h1>
 
       <div class="relative w-64 h-64 mx-auto">
@@ -39,11 +43,13 @@
       <div class="flex items-center justify-center space-x-4">
         <Button variant="outline" size="icon" @click="restart">
           <SkipBack class="w-4 h-4" />
-          <span class="sr-only">Restart</span>
+          <span class="sr-only">{{ t("playback.restart") }}</span>
         </Button>
         <Button size="icon" @click="togglePlayPause">
           <component :is="isPlaying ? Pause : Play" class="w-4 h-4" />
-          <span class="sr-only">{{ isPlaying ? "Pause" : "Play" }}</span>
+          <span class="sr-only">{{
+            isPlaying ? t("playback.pause") : t("playback.play")
+          }}</span>
         </Button>
         <div>
           <Select
@@ -51,14 +57,15 @@
             @update:model-value="changePlaybackSpeed"
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select playback speed" />
+              <SelectValue placeholder="{{ t('playback.selectSpeed') }}" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem :value="'0.5'">0.5x</SelectItem>
-              <SelectItem :value="'0.75'">0.75x</SelectItem>
-              <SelectItem :value="'1'">1x</SelectItem>
-              <SelectItem :value="'1.5'">1.5x</SelectItem>
-              <SelectItem :value="'1.75'">1.75x</SelectItem>
+              <SelectItem
+                v-for="rate in playbackRates"
+                :key="rate"
+                :value="rate"
+                >{{ `${rate}${t("playback.speedSuffix")}` }}</SelectItem
+              >
             </SelectContent>
           </Select>
         </div>
@@ -68,41 +75,64 @@
 </template>
 
 <script setup lang="ts">
-import { Pause, Play, SkipBack } from "lucide-vue-next";
+import { useToast } from "@/components/ui/toast/use-toast";
+import { Loader2, Pause, Play, SkipBack } from "lucide-vue-next";
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import { useRoute } from "vue-router";
 
+const { t } = useI18n({
+  useScope: "local",
+});
 const route = useRoute();
+const { toast } = useToast();
 
 const isPlaying = ref(false);
 const currentTime = ref(0);
 const playbackSpeed = ref("1");
-const audioRef = ref<HTMLAudioElement>(null);
+const audioRef = ref<HTMLAudioElement | null>(null);
 
-const id = route.params.id;
+const {
+  data: meditation,
+  status,
+  error,
+} = useFetch(`/api/meditations/${route.params.id}/playback`, {});
 
-const { result } = await useLoader("meditation/playback", {
-  params: { id },
-});
+if (error.value || !meditation) {
+  toast({
+    description: error.value?.message ?? "Failed to fetch meditation",
+    variant: "destructive",
+  });
+}
 
 const client = useSupabaseClient();
 
-const { data: audioBlob } = await client.storage
-  .from("meditations")
-  .download(result.value?.meditation.audio_files?.url);
+const playbackRates = ["0.5", "0.75", "1", "1.5", "1.75"];
 
-const meditation = computed(() => result.value?.meditation);
-const durationInSeconds = computed(() => meditation.value?.duration * 60);
+const { data: audioBlob, error: audioBlobError } = await client.storage
+  .from("meditations")
+  .download(meditation.value?.audio_files?.url ?? "");
+if (audioBlobError) {
+  toast({
+    description: "Failed to download audio file",
+    variant: "destructive",
+  });
+}
+
+const durationInSeconds = computed(
+  () => (meditation.value?.duration ?? 0) * 60
+);
 
 onMounted(() => {
   if (audioBlob) {
     try {
       const audioUrl = URL.createObjectURL(audioBlob);
 
-      audioRef.value.src = audioUrl;
-      audioRef.value.playbackRate = playbackSpeed.value;
-      audioRef.value.addEventListener("timeupdate", updateTime);
-      audioRef.value.load();
+      if (audioRef.value) {
+        audioRef.value.src = audioUrl;
+        audioRef.value.playbackRate = Number(playbackSpeed.value);
+        audioRef.value.addEventListener("timeupdate", updateTime);
+        audioRef.value.load();
+      }
     } catch (error) {
       console.error("Failed to create object URL:", error);
     }
@@ -126,7 +156,7 @@ function updateTime() {
 
 function changePlaybackSpeed() {
   if (audioRef.value) {
-    audioRef.value.playbackRate = playbackSpeed.value;
+    audioRef.value.playbackRate = Number(playbackSpeed.value);
   }
 }
 
@@ -165,3 +195,26 @@ function restart() {
   }
 }
 </script>
+
+<i18n lang="json">
+{
+  "en": {
+    "playback": {
+      "restart": "Restart",
+      "pause": "Pause",
+      "play": "Play",
+      "selectSpeed": "Select playback speed",
+      "speedSuffix": "x"
+    }
+  },
+  "fr": {
+    "playback": {
+      "restart": "Redémarrer",
+      "pause": "Pause",
+      "play": "Lecture",
+      "selectSpeed": "Sélectionner la vitesse de lecture",
+      "speedSuffix": "x"
+    }
+  }
+}
+</i18n>

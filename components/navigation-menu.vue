@@ -37,21 +37,44 @@
 <script setup lang="ts">
 import { CirclePlus, House, Sprout, UserRound } from "lucide-vue-next";
 
+const { t } = useI18n({
+  useScope: "local",
+});
+
 const shortcuts = [
   {
     icon: House,
-    text: "Home",
+    text: t("navigation.home"),
     href: "/",
   },
   {
     icon: CirclePlus,
-    text: "Create",
+    text: t("navigation.create"),
     href: "/meditation/new",
   },
   {
     icon: UserRound,
-    text: "Settings",
+    text: t("navigation.settings"),
     href: "/settings",
   },
 ];
 </script>
+
+<i18n lang="json">
+{
+  "en": {
+    "navigation": {
+      "home": "Home",
+      "create": "Create",
+      "settings": "Settings"
+    }
+  },
+  "fr": {
+    "navigation": {
+      "home": "Accueil",
+      "create": "Créer",
+      "settings": "Paramètres"
+    }
+  }
+}
+</i18n>

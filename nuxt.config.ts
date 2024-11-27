@@ -8,6 +8,7 @@ export default defineNuxtConfig({
     "shadcn-nuxt",
     "@nuxtjs/supabase",
     "@hebilicious/form-actions-nuxt",
+    "@nuxtjs/i18n",
   ],
   supabase: {
     redirectOptions: {
@@ -15,5 +16,9 @@ export default defineNuxtConfig({
       callback: "/",
       exclude: ["/signup"],
     },
+  },
+  i18n: {
+    strategy: "no_prefix",
+    defaultLocale: "fr",
   },
 });

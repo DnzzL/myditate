@@ -15,6 +15,7 @@
     "@hebilicious/form-actions-nuxt": "^0.3.0",
     "@mistralai/mistralai": "^1.3.4",
     "@nuxt/icon": "^1.5.6",
+    "@nuxtjs/i18n": "9.0.0-rc.2",
     "@nuxtjs/supabase": "^1.4.1",
     "@supabase/supabase-js": "^2.45.4",
     "@vee-validate/zod": "^4.14.6",
