@@ -7,7 +7,6 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "shadcn-nuxt",
     "@nuxtjs/supabase",
-    "@hebilicious/form-actions-nuxt",
     "@nuxtjs/i18n",
   ],
   supabase: {

@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div v-if="shouldDisplay">
     <header
-      class="items-center justify-between hidden w-full px-4 py-3 bg-white shadow-sm lg:flex dark:bg-gray-950 sm:px-6 md:px-8 lg:px-10"
+      class="items-center justify-between hidden w-full px-4 py-3 shadow-sm lg:flex bg-background text-foreground sm:px-6 md:px-8 lg:px-10"
     >
       <NuxtLink href="#" class="flex items-center">
         <Sprout class="w-6 h-6" />
@@ -12,20 +12,20 @@
           v-for="shortcut in shortcuts"
           :key="shortcut.text"
           :href="shortcut.href"
-          class="hover:underline hover:underline-offset-4"
+          class="transition-colors hover:text-primary hover:underline hover:underline-offset-4"
         >
           {{ shortcut.text }}
         </NuxtLink>
       </nav>
     </header>
     <div
-      class="fixed bottom-0 left-0 z-10 flex items-center justify-around w-full py-3 bg-white shadow-t dark:bg-gray-950 lg:hidden"
+      class="fixed bottom-0 left-0 z-10 flex items-center justify-around w-full py-3 shadow-t lg:hidden bg-background"
     >
       <NuxtLink
         v-for="shortcut in shortcuts"
         :key="shortcut.text"
         :href="shortcut.href"
-        class="flex flex-col items-center gap-1 text-xs font-medium text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-50"
+        class="flex flex-col items-center gap-1 text-xs font-medium transition-colors text-muted-foreground hover:text-primary"
       >
         <Component :is="shortcut.icon" class="w-6 h-6" />
         {{ shortcut.text }}
@@ -36,10 +36,12 @@
 
 <script setup lang="ts">
 import { CirclePlus, House, Sprout, UserRound } from "lucide-vue-next";
+import { computed } from "vue";
 
 const { t } = useI18n({
   useScope: "local",
 });
+const route = useRoute();
 
 const shortcuts = [
   {
@@ -58,6 +60,10 @@ const shortcuts = [
     href: "/settings",
   },
 ];
+
+const shouldDisplay = computed(
+  () => route.path !== "/login" && route.path !== "/signup"
+);
 </script>
 
 <i18n lang="json">

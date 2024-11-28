@@ -12,33 +12,33 @@
   },
   "dependencies": {
     "@google-cloud/text-to-speech": "^5.6.0",
-    "@hebilicious/form-actions-nuxt": "^0.3.0",
     "@mistralai/mistralai": "^1.3.4",
-    "@nuxt/icon": "^1.5.6",
+    "@nuxt/icon": "^1.8.2",
     "@nuxtjs/i18n": "9.0.0-rc.2",
-    "@nuxtjs/supabase": "^1.4.1",
-    "@supabase/supabase-js": "^2.45.4",
-    "@vee-validate/zod": "^4.14.6",
-    "@vueuse/core": "^11.1.0",
-    "class-variance-authority": "^0.7.0",
+    "@nuxtjs/supabase": "^1.4.3",
+    "@supabase/supabase-js": "^2.46.2",
+    "@vee-validate/zod": "^4.14.7",
+    "@vueuse/core": "^11.3.0",
+    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-vue-next": "^0.452.0",
-    "nuxt": "^3.13.0",
-    "openai": "^4.68.4",
-    "radix-vue": "^1.9.7",
+    "nuxt": "^3.14.1592",
+    "openai": "^4.73.1",
+    "radix-vue": "^1.9.10",
     "shadcn-nuxt": "^0.10.4",
-    "tailwind-merge": "^2.5.4",
+    "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
-    "vee-validate": "^4.14.6",
+    "vee-validate": "^4.14.7",
     "vue": "latest",
     "vue-router": "latest",
     "zod": "^3.23.8",
     "zod-form-data": "^2.0.2"
   },
   "devDependencies": {
-    "@nuxtjs/tailwindcss": "^6.12.1",
-    "@pulumi/docker": "^4.5.7",
-    "@pulumi/pulumi": "^3.138.0",
-    "typescript": "^5.6.3"
+    "@nuxtjs/tailwindcss": "^6.12.2",
+    "typescript": "^5.7.2"
+  },
+  "resolutions": {
+    "@intlify/shared": "^9.7.0"
   }
 }
